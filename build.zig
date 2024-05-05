@@ -66,8 +66,8 @@ pub fn build(b: *std.Build) !void {
         .target = target,
         .optimize = optimize,
     });
-    render.addModule("tvg", tvg);
-    render.addModule("args", args);
+    render.root_module.addImport("tvg", tvg);
+    render.root_module.addImport("args", args);
     if (install_bin) {
         b.installArtifact(render);
     }
