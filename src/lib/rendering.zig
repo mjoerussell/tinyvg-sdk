@@ -260,9 +260,9 @@ pub fn isFramebuffer(comptime T: type) bool {
         std.meta.Child(T)
     else
         T;
-    return std.meta.trait.hasFn("setPixel")(FbType) and
-        std.meta.trait.hasField("width")(FbType) and
-        std.meta.trait.hasField("height")(FbType);
+    return std.meta.hasFn(FbType, "setPixel") and
+        std.meta.fieldIndex(FbType, "width") != null and
+        std.meta.fieldIndex(FbType, "height") != null;
 }
 
 const Point = tvg.Point;

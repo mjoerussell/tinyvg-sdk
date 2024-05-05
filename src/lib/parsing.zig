@@ -141,14 +141,14 @@ pub fn Parser(comptime Reader: type) type {
                     const range: tvg.Range = @enumFromInt(scale_and_flags.coordinate_range);
 
                     const width: u32 = switch (range) {
-                        .reduced => mapZeroToMax(try reader.readIntLittle(u8)),
-                        .default => mapZeroToMax(try reader.readIntLittle(u16)),
-                        .enhanced => std.math.cast(u32, mapZeroToMax(try reader.readIntLittle(u32))) orelse return error.InvalidData,
+                        .reduced => mapZeroToMax(try reader.readInt(u8, .little)),
+                        .default => mapZeroToMax(try reader.readInt(u16, .little)),
+                        .enhanced => std.math.cast(u32, mapZeroToMax(try reader.readInt(u32, .little))) orelse return error.InvalidData,
                     };
                     const height: u32 = switch (range) {
-                        .reduced => mapZeroToMax(try reader.readIntLittle(u8)),
-                        .default => mapZeroToMax(try reader.readIntLittle(u16)),
-                        .enhanced => std.math.cast(u32, mapZeroToMax(try reader.readIntLittle(u32))) orelse return error.InvalidData,
+                        .reduced => mapZeroToMax(try reader.readInt(u8, .little)),
+                        .default => mapZeroToMax(try reader.readInt(u16, .little)),
+                        .enhanced => std.math.cast(u32, mapZeroToMax(try reader.readInt(u32, .little))) orelse return error.InvalidData,
                     };
 
                     const color_count = try self.readUInt();
@@ -159,13 +159,13 @@ pub fn Parser(comptime Reader: type) type {
                     for (self.color_table) |*c| {
                         c.* = switch (color_encoding) {
                             .u8888 => tvg.Color{
-                                .r = @as(f32, @floatFromInt(try reader.readIntLittle(u8))) / 255.0,
-                                .g = @as(f32, @floatFromInt(try reader.readIntLittle(u8))) / 255.0,
-                                .b = @as(f32, @floatFromInt(try reader.readIntLittle(u8))) / 255.0,
-                                .a = @as(f32, @floatFromInt(try reader.readIntLittle(u8))) / 255.0,
+                                .r = @as(f32, @floatFromInt(try reader.readInt(u8, .little))) / 255.0,
+                                .g = @as(f32, @floatFromInt(try reader.readInt(u8, .little))) / 255.0,
+                                .b = @as(f32, @floatFromInt(try reader.readInt(u8, .little))) / 255.0,
+                                .a = @as(f32, @floatFromInt(try reader.readInt(u8, .little))) / 255.0,
                             },
                             .u565 => blk: {
-                                const rgb = try reader.readIntLittle(u16);
+                                const rgb = try reader.readInt(u16, .little);
                                 break :blk tvg.Color{
                                     .r = @as(f32, @floatFromInt((rgb & 0x001F) >> 0)) / 31.0,
                                     .g = @as(f32, @floatFromInt((rgb & 0x07E0) >> 5)) / 63.0,
@@ -175,10 +175,10 @@ pub fn Parser(comptime Reader: type) type {
                             },
                             .f32 => tvg.Color{
                                 // TODO: Verify if this is platform independently correct:
-                                .r = @as(f32, @bitCast(try reader.readIntLittle(u32))),
-                                .g = @as(f32, @bitCast(try reader.readIntLittle(u32))),
-                                .b = @as(f32, @bitCast(try reader.readIntLittle(u32))),
-                                .a = @as(f32, @bitCast(try reader.readIntLittle(u32))),
+                                .r = @as(f32, @bitCast(try reader.readInt(u32, .little))),
+                                .g = @as(f32, @bitCast(try reader.readInt(u32, .little))),
+                                .b = @as(f32, @bitCast(try reader.readInt(u32, .little))),
+                                .a = @as(f32, @bitCast(try reader.readInt(u32, .little))),
                             },
                             .custom => return error.UnsupportedColorFormat,
                         };
@@ -589,9 +589,9 @@ pub fn Parser(comptime Reader: type) type {
 
         fn readUnit(self: *const Self) !f32 {
             const unit: tvg.Unit = switch (self.header.coordinate_range) {
-                .reduced => @enumFromInt(try self.reader.readIntLittle(i8)),
-                .default => @enumFromInt(try self.reader.readIntLittle(i16)),
-                .enhanced => @enumFromInt(try self.reader.readIntLittle(i32)),
+                .reduced => @enumFromInt(try self.reader.readInt(i8, .little)),
+                .default => @enumFromInt(try self.reader.readInt(i16, .little)),
+                .enhanced => @enumFromInt(try self.reader.readInt(i32, .little)),
             };
             return unit.toFloat(self.header.scale);
         }
@@ -601,7 +601,7 @@ pub fn Parser(comptime Reader: type) type {
         }
 
         fn readU16(self: *Self) !u16 {
-            return try self.reader.readIntLittle(u16);
+            return try self.reader.readInt(u16, .little);
         }
     };
 }
