@@ -88,9 +88,10 @@ pub fn build(b: *std.Build) !void {
     const ground_truth_generator = b.addExecutable(.{
         .name = "ground-truth-generator",
         .root_source_file = .{ .path = "src/lib/data/ground-truth.zig" },
-        .main_pkg_path = .{ .path = "src/lib" },
+        // .main_pkg_path = .{ .path = "src/lib" },
         .optimize = optimize,
     });
+
     for (tvg.import_table.keys(), tvg.import_table.values()) |name, mod| {
         ground_truth_generator.root_module.addImport(name, mod);
     }
@@ -129,7 +130,7 @@ pub fn build(b: *std.Build) !void {
         const tvg_tests = b.addTest(.{
             .root_source_file = tvg.root_source_file,
             .optimize = optimize,
-            .main_pkg_path = .{ .path = "src" },
+            // .main_pkg_path = .{ .path = "src" },
         });
         for (tvg.import_table.keys(), tvg.import_table.values()) |name, mod| {
             tvg_tests.root_module.addImport(name, mod);
