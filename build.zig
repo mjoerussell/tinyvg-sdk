@@ -12,7 +12,7 @@ pub fn build(b: *std.Build) !void {
 
     // TinyVG package
     const tvg = b.addModule("tvg", .{
-        .source_file = .{ .path = "src/lib/tinyvg.zig" },
+        .root_source_file = .{ .path = "src/lib/tinyvg.zig" },
         .dependencies = &.{.{ .name = "ptk", .module = ptk }},
     });
 
@@ -127,7 +127,7 @@ pub fn build(b: *std.Build) !void {
 
     {
         const tvg_tests = b.addTest(.{
-            .root_source_file = tvg.source_file,
+            .root_source_file = tvg.root_source_file,
             .optimize = optimize,
             .main_pkg_path = .{ .path = "src" },
         });
