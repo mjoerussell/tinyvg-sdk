@@ -78,9 +78,9 @@ pub fn build(b: *std.Build) !void {
         .target = target,
         .optimize = optimize,
     });
-    text.addModule("tvg", tvg);
-    text.addModule("args", args);
-    text.addModule("ptk", ptk);
+    text.root_module.addImport("tvg", tvg);
+    text.root_module.addImport("args", args);
+    text.root_module.addImport("ptk", ptk);
     if (install_bin) {
         b.installArtifact(text);
     }
@@ -92,7 +92,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
     for (tvg.import_table.keys(), tvg.import_table.values()) |name, mod| {
-        ground_truth_generator.addModule(name, mod);
+        ground_truth_generator.root_module.addImport(name, mod);
     }
 
     const generate_ground_truth = b.addRunArtifact(ground_truth_generator);
@@ -132,7 +132,7 @@ pub fn build(b: *std.Build) !void {
             .main_pkg_path = .{ .path = "src" },
         });
         for (tvg.import_table.keys(), tvg.import_table.values()) |name, mod| {
-            tvg_tests.addModule(name, mod);
+            tvg_tests.root_module.addImport(name, mod);
         }
 
         const static_binding_test = b.addExecutable(.{
@@ -176,7 +176,7 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
     polyfill.strip = (optimize != .Debug);
-    polyfill.addModule("tvg", tvg);
+    polyfill.root_module.addImport("tvg", tvg);
 
     if (install_www) {
         var artifact_install = b.addInstallArtifact(polyfill, .{});
