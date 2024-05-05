@@ -13,7 +13,7 @@ pub fn build(b: *std.Build) !void {
     // TinyVG package
     const tvg = b.addModule("tvg", .{
         .root_source_file = .{ .path = "src/lib/tinyvg.zig" },
-        .dependencies = &.{.{ .name = "ptk", .module = ptk }},
+        .imports = &.{.{ .name = "ptk", .module = ptk }},
     });
 
     const args_dep = b.dependency("args", .{});
@@ -91,7 +91,7 @@ pub fn build(b: *std.Build) !void {
         .main_pkg_path = .{ .path = "src/lib" },
         .optimize = optimize,
     });
-    for (tvg.dependencies.keys(), tvg.dependencies.values()) |name, mod| {
+    for (tvg.import_table.keys(), tvg.import_table.values()) |name, mod| {
         ground_truth_generator.addModule(name, mod);
     }
 
@@ -131,7 +131,7 @@ pub fn build(b: *std.Build) !void {
             .optimize = optimize,
             .main_pkg_path = .{ .path = "src" },
         });
-        for (tvg.dependencies.keys(), tvg.dependencies.values()) |name, mod| {
+        for (tvg.import_table.keys(), tvg.import_table.values()) |name, mod| {
             tvg_tests.addModule(name, mod);
         }
 
