@@ -183,8 +183,8 @@ pub fn build(b: *std.Build) !void {
             .os_tag = .freestanding,
         }),
         .optimize = optimize,
+        .strip = optimize != .Debug,
     });
-    polyfill.strip = (optimize != .Debug);
     polyfill.root_module.addImport("tvg", tvg);
 
     if (install_www) {
