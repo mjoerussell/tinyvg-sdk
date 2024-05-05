@@ -134,7 +134,7 @@ pub fn build(b: *std.Build) !void {
 
     {
         const tvg_tests = b.addTest(.{
-            .root_source_file = tvg.root_source_file,
+            .root_source_file = tvg.root_source_file.?,
             .optimize = optimize,
             // .main_pkg_path = .{ .path = "src" },
         });
