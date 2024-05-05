@@ -1,6 +1,6 @@
 const std = @import("std");
 
-fn initNativeLibrary(lib: *std.build.CompileStep, tvg: *std.Build.Module) void {
+fn initNativeLibrary(lib: *std.Build.Step.Compile, tvg: *std.Build.Module) void {
     lib.addModule("tvg", tvg);
     lib.addIncludePath(.{ .path = "src/binding/include" });
     lib.bundle_compiler_rt = true;
@@ -18,7 +18,7 @@ pub fn build(b: *std.Build) !void {
 
     const args_dep = b.dependency("args", .{});
     const args = args_dep.module("args");
-    const www_folder = std.build.InstallDir{ .custom = "www" };
+    const www_folder = std.Build.InstallDir{ .custom = "www" };
 
     const install_include = b.option(bool, "install-include", "Installs the include directory") orelse true;
     const install_www = b.option(bool, "install-www", "Installs the www directory (polyfill)") orelse true;
