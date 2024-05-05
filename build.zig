@@ -177,11 +177,11 @@ pub fn build(b: *std.Build) !void {
     const polyfill = b.addSharedLibrary(.{
         .name = "tinyvg",
         .root_source_file = .{ .path = "src/polyfill/tinyvg.zig" },
-        .target = .{
+        .target = b.resolveTargetQuery(.{
             .cpu_arch = .wasm32,
             .cpu_model = .baseline,
             .os_tag = .freestanding,
-        },
+        }),
         .optimize = optimize,
     });
     polyfill.strip = (optimize != .Debug);
