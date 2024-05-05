@@ -210,7 +210,7 @@ pub fn Parser(comptime Reader: type) type {
             // alignment here
             try self.temp_buffer.resize(@sizeOf(T) * length);
 
-            var items = std.mem.bytesAsSlice(T, self.temp_buffer.items[0..(@sizeOf(T) * length)]);
+            const items = std.mem.bytesAsSlice(T, self.temp_buffer.items[0..(@sizeOf(T) * length)]);
             std.debug.assert(items.len == length);
             return items;
         }
@@ -229,7 +229,7 @@ pub fn Parser(comptime Reader: type) type {
             // T2 alignment could be larger than T1
             const offset = std.mem.alignForward(usize, @sizeOf(T1) * length1, @alignOf(T2));
 
-            var result = .{
+            const result = .{
                 .first = std.mem.bytesAsSlice(T1, self.temp_buffer.items[0 .. @sizeOf(T1) * length1]),
                 .second = @as([]T2, @alignCast(std.mem.bytesAsSlice(T2, self.temp_buffer.items[offset..][0 .. @sizeOf(T2) * length2]))),
             };
@@ -447,7 +447,7 @@ pub fn Parser(comptime Reader: type) type {
                 segment.start.x = try self.readUnit();
                 segment.start.y = try self.readUnit();
 
-                var commands = buffers.second[segment_start..][0..segment_len];
+                const commands = buffers.second[segment_start..][0..segment_len];
                 for (commands) |*node| {
                     node.* = try self.readNode();
                 }
@@ -472,7 +472,7 @@ pub fn Parser(comptime Reader: type) type {
             };
             const tag: Tag = @bitCast(try self.readByte());
 
-            var line_width: ?f32 = if (tag.has_line_width)
+            const line_width: ?f32 = if (tag.has_line_width)
                 try self.readUnit()
             else
                 null;
@@ -501,7 +501,7 @@ pub fn Parser(comptime Reader: type) type {
                     },
                 }) },
                 .arc_circle => blk: {
-                    var flags = try self.readByte();
+                    const flags = try self.readByte();
                     break :blk PathNode{ .arc_circle = PathNode.NodeData(PathNode.ArcCircle).init(line_width, PathNode.ArcCircle{
                         .radius = try self.readUnit(),
                         .large_arc = (flags & 1) != 0,
@@ -513,7 +513,7 @@ pub fn Parser(comptime Reader: type) type {
                     }) };
                 },
                 .arc_ellipse => blk: {
-                    var flags = try self.readByte();
+                    const flags = try self.readByte();
                     break :blk PathNode{ .arc_ellipse = PathNode.NodeData(PathNode.ArcEllipse).init(line_width, PathNode.ArcEllipse{
                         .radius_x = try self.readUnit(),
                         .radius_y = try self.readUnit(),
