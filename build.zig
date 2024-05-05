@@ -90,6 +90,7 @@ pub fn build(b: *std.Build) !void {
         .root_source_file = .{ .path = "src/lib/data/ground-truth.zig" },
         // .main_pkg_path = .{ .path = "src/lib" },
         .optimize = optimize,
+        .target = target,
     });
 
     for (tvg.import_table.keys(), tvg.import_table.values()) |name, mod| {
@@ -139,6 +140,7 @@ pub fn build(b: *std.Build) !void {
         const static_binding_test = b.addExecutable(.{
             .name = "static-native-binding",
             .optimize = optimize,
+            .target = target,
         });
         static_binding_test.linkLibC();
         static_binding_test.addIncludePath(.{ .path = "src/binding/include" });
@@ -148,6 +150,7 @@ pub fn build(b: *std.Build) !void {
         const dynamic_binding_test = b.addExecutable(.{
             .name = "dynamic-native-binding",
             .optimize = optimize,
+            .target = target,
         });
         dynamic_binding_test.linkLibC();
         dynamic_binding_test.addIncludePath(.{ .path = "src/binding/include" });
