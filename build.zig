@@ -1,7 +1,7 @@
 const std = @import("std");
 
 fn initNativeLibrary(lib: *std.Build.Step.Compile, tvg: *std.Build.Module) void {
-    lib.addModule("tvg", tvg);
+    lib.root_module.addImport("tvg", tvg);
     lib.addIncludePath(.{ .path = "src/binding/include" });
     lib.bundle_compiler_rt = true;
 }
@@ -39,7 +39,7 @@ pub fn build(b: *std.Build) !void {
         b.installArtifact(static_native_lib);
     }
 
-    const dynamic_lib_name = if (target.isWindows())
+    const dynamic_lib_name = if (target.result.os.tag == .windows)
         "tinyvg.dll"
     else
         "tinyvg";
