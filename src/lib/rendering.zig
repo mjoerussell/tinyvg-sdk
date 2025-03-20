@@ -1194,7 +1194,8 @@ pub fn FixedBufferList(comptime T: type, comptime N: usize) type {
 
         pub fn popBack(self: *Self) ?T {
             if (self.large) |*large| {
-                return large.popOrNull();
+                if (large.items.len == 0) return null;
+                return large.pop();
             }
 
             if (self.count == 0)
